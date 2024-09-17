@@ -9,6 +9,12 @@ include 'menu.php';
    
 </head>
 <body>
+<div class="container">
+    <div class="alert alert-primary" role="alert">
+        <center><h3>AJUSTE DE INVENTARIO</h3></center>
+
+</div>
+</div>
     <div class="container">
     <form class="row g-3 needs-validation" novalidate>
   <div class="col-md-4">

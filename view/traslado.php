@@ -9,7 +9,15 @@ include 'menu.php';
     
 </head>
 <body>
-    <div class="container">
+<div class="container">
+    <div class="alert alert-primary" role="alert">
+        <center><h3>TRASLADO ENTRE ALMACENES</h3></center>
+
+</div>
+</div>
+   
+
+<div class="container">
 
   
 <form class="row g-3">
