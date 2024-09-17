@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 13-09-2024 a las 21:10:11
--- Versión del servidor: 10.4.32-MariaDB
--- Versión de PHP: 8.2.12
+-- Tiempo de generación: 17-09-2024 a las 05:54:43
+-- Versión del servidor: 10.4.28-MariaDB
+-- Versión de PHP: 8.0.28
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -35,6 +35,13 @@ CREATE TABLE `tbl_cliente` (
   `telefono` varchar(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Volcado de datos para la tabla `tbl_cliente`
+--
+
+INSERT INTO `tbl_cliente` (`id_cliente`, `Nombre`, `Apellido`, `cedula`, `telefono`) VALUES
+(1, 'oscar', 'lopez', '25213710', '04242585491');
+
 -- --------------------------------------------------------
 
 --
@@ -55,11 +62,40 @@ CREATE TABLE `tbl_conteo` (
 
 CREATE TABLE `tbl_producto` (
   `id_producto` int(11) NOT NULL,
+  `sku` varchar(20) NOT NULL,
   `producto` varchar(30) NOT NULL,
   `precio` decimal(10,0) NOT NULL,
   `cantidad` int(11) NOT NULL,
   `stock_minimo` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `tbl_producto`
+--
+
+INSERT INTO `tbl_producto` (`id_producto`, `sku`, `producto`, `precio`, `cantidad`, `stock_minimo`) VALUES
+(1, '0123456', 'lapiz', 12, 20, 10),
+(2, '1234', 'perro', 25, 12, 12);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `tbl_producto_ubicacion`
+--
+
+CREATE TABLE `tbl_producto_ubicacion` (
+  `id_producto` int(11) NOT NULL,
+  `id_ubicacion` int(11) NOT NULL,
+  `cantidad` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `tbl_producto_ubicacion`
+--
+
+INSERT INTO `tbl_producto_ubicacion` (`id_producto`, `id_ubicacion`, `cantidad`) VALUES
+(1, 1, 100),
+(1, 2, 200);
 
 -- --------------------------------------------------------
 
@@ -119,9 +155,16 @@ CREATE TABLE `tbl_transac` (
 
 CREATE TABLE `tbl_ubicacion` (
   `id_ubicacion` int(11) NOT NULL,
-  `nombre` varchar(30) NOT NULL,
-  `id_producto` int(11) NOT NULL
+  `nombre` varchar(30) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `tbl_ubicacion`
+--
+
+INSERT INTO `tbl_ubicacion` (`id_ubicacion`, `nombre`) VALUES
+(1, 'tienda'),
+(2, 'almacen');
 
 -- --------------------------------------------------------
 
@@ -135,6 +178,15 @@ CREATE TABLE `tbl_user` (
   `tipo_user` int(11) NOT NULL,
   `pass` varchar(30) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `tbl_user`
+--
+
+INSERT INTO `tbl_user` (`id_user`, `user`, `tipo_user`, `pass`) VALUES
+(1, 'oscarlopez', 1, '1234'),
+(2, 'juan', 2, '12345'),
+(3, 'pedro', 3, '1234');
 
 -- --------------------------------------------------------
 
@@ -175,6 +227,12 @@ ALTER TABLE `tbl_producto`
   ADD PRIMARY KEY (`id_producto`);
 
 --
+-- Indices de la tabla `tbl_producto_ubicacion`
+--
+ALTER TABLE `tbl_producto_ubicacion`
+  ADD PRIMARY KEY (`id_producto`,`id_ubicacion`);
+
+--
 -- Indices de la tabla `tbl_repartidor`
 --
 ALTER TABLE `tbl_repartidor`
@@ -184,7 +242,8 @@ ALTER TABLE `tbl_repartidor`
 -- Indices de la tabla `tbl_roll`
 --
 ALTER TABLE `tbl_roll`
-  ADD PRIMARY KEY (`id_roll`);
+  ADD PRIMARY KEY (`id_roll`),
+  ADD UNIQUE KEY `fk_id_user` (`fk_id_user`);
 
 --
 -- Indices de la tabla `tbl_tipo_venta`
@@ -224,7 +283,7 @@ ALTER TABLE `tbl_venta`
 -- AUTO_INCREMENT de la tabla `tbl_cliente`
 --
 ALTER TABLE `tbl_cliente`
-  MODIFY `id_cliente` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_cliente` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de la tabla `tbl_conteo`
@@ -236,7 +295,7 @@ ALTER TABLE `tbl_conteo`
 -- AUTO_INCREMENT de la tabla `tbl_producto`
 --
 ALTER TABLE `tbl_producto`
-  MODIFY `id_producto` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_producto` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT de la tabla `tbl_repartidor`
@@ -266,19 +325,29 @@ ALTER TABLE `tbl_transac`
 -- AUTO_INCREMENT de la tabla `tbl_ubicacion`
 --
 ALTER TABLE `tbl_ubicacion`
-  MODIFY `id_ubicacion` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_ubicacion` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT de la tabla `tbl_user`
 --
 ALTER TABLE `tbl_user`
-  MODIFY `id_user` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_user` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT de la tabla `tbl_venta`
 --
 ALTER TABLE `tbl_venta`
   MODIFY `id_venta` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- Restricciones para tablas volcadas
+--
+
+--
+-- Filtros para la tabla `tbl_roll`
+--
+ALTER TABLE `tbl_roll`
+  ADD CONSTRAINT `tbl_roll_ibfk_1` FOREIGN KEY (`fk_id_user`) REFERENCES `tbl_user` (`id_user`) ON DELETE CASCADE ON UPDATE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
